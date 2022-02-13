@@ -1,6 +1,0 @@
-//Sources/azure-sdk-for-c-swift/module.modulemap
-module azure-sdk-for-c-swift {
-    header "../../Headers/azure-sdk-for-c-swift-bridge.h"
-    link "azure-sdk-for-c"
-    export *
-}
