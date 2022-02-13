@@ -3,8 +3,8 @@
 
 #include "az_iot_hub_client_properties.h"
 
-#include <internal/az_precondition_internal.h>
-#include <internal/az_result_internal.h>
+#include "az_precondition_internal.h"
+#include "az_result_internal.h"
 
 static const az_span iot_hub_properties_reported = AZ_SPAN_LITERAL_FROM_STR("reported");
 static const az_span iot_hub_properties_desired = AZ_SPAN_LITERAL_FROM_STR("desired");

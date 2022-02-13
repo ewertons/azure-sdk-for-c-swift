@@ -7,8 +7,8 @@
 #include "az_http_transport.h"
 #include "az_log.h"
 #include "az_span.h"
-#include <internal/az_http_internal.h>
-#include <internal/az_log_internal.h>
+#include "az_http_internal.h"
+#include "az_log_internal.h"
 
 #include <stddef.h>
 

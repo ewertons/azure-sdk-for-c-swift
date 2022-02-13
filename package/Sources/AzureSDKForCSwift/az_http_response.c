@@ -7,8 +7,8 @@
 #include "az_http_private.h"
 #include "az_span_private.h"
 #include "az_precondition.h"
-#include <internal/az_precondition_internal.h>
-#include <internal/az_result_internal.h>
+#include "az_precondition_internal.h"
+#include "az_result_internal.h"
 
 #include "_az_cfg.h"
 #include <ctype.h>

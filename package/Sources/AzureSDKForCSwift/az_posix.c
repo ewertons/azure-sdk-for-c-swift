@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 
 #include "az_platform.h"
-#include <internal/az_config_internal.h>
-#include <internal/az_precondition_internal.h>
+#include "az_config_internal.h"
+#include "az_precondition_internal.h"
 
 #include <time.h>
 

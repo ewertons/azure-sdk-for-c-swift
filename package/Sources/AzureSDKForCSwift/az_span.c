@@ -5,9 +5,9 @@
 #include "az_span_private.h"
 #include "az_precondition.h"
 #include "az_span.h"
-#include <internal/az_precondition_internal.h>
-#include <internal/az_result_internal.h>
-#include <internal/az_span_internal.h>
+#include "az_precondition_internal.h"
+#include "az_result_internal.h"
+#include "az_span_internal.h"
 
 #include <ctype.h>
 #include <math.h>

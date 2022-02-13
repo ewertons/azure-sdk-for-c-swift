@@ -5,10 +5,10 @@
 #include "az_span_private.h"
 #include "az_http_transport.h"
 #include "az_platform.h"
-#include <internal/az_http_internal.h>
-#include <internal/az_log_internal.h>
-#include <internal/az_result_internal.h>
-#include <internal/az_span_internal.h>
+#include "az_http_internal.h"
+#include "az_log_internal.h"
+#include "az_result_internal.h"
+#include "az_span_internal.h"
 
 #include "_az_cfg.h"
 

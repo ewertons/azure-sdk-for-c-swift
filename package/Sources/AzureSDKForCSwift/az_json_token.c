@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // SPDX-License-Identifier: MIT
 
-#include <internal/az_precondition_internal.h>
-#include <internal/az_result_internal.h>
-#include <internal/az_span_internal.h>
+#include "az_precondition_internal.h"
+#include "az_result_internal.h"
+#include "az_span_internal.h"
 
 #include "az_json_private.h"
 

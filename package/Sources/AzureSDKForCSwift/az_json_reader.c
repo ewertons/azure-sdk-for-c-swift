@@ -4,8 +4,8 @@
 #include "az_json_private.h"
 #include "az_span_private.h"
 #include "az_precondition.h"
-#include <internal/az_result_internal.h>
-#include <internal/az_span_internal.h>
+#include "az_result_internal.h"
+#include "az_span_internal.h"
 
 #include <ctype.h>
 

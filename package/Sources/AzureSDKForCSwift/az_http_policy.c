@@ -7,9 +7,9 @@
 #include "az_precondition.h"
 #include "az_span.h"
 #include "az_version.h"
-#include <internal/az_http_internal.h>
-#include <internal/az_result_internal.h>
-#include <internal/az_span_internal.h>
+#include "az_http_internal.h"
+#include "az_result_internal.h"
+#include "az_span_internal.h"
 
 #include "_az_cfg.h"
 

@@ -5,7 +5,7 @@
 #define _az_JSON_PRIVATE_H
 
 #include "az_json.h"
-#include <internal/az_precondition_internal.h>
+#include "az_precondition_internal.h"
 
 #include "_az_cfg_prefix.h"
 

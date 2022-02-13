@@ -6,12 +6,12 @@
 #include "az_precondition.h"
 #include "az_result.h"
 #include "az_span.h"
-#include <internal/az_precondition_internal.h>
-#include <internal/az_result_internal.h>
+#include "az_precondition_internal.h"
+#include "az_result_internal.h"
 #include "az_iot_hub_client.h"
 
-#include <internal/az_log_internal.h>
-#include <internal/az_precondition_internal.h>
+#include "az_log_internal.h"
+#include "az_precondition_internal.h"
 
 #include "_az_cfg.h"
 

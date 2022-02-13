@@ -8,10 +8,10 @@
 #include "az_http.h"
 #include "az_http_transport.h"
 #include "az_precondition.h"
-#include <internal/az_http_internal.h>
-#include <internal/az_precondition_internal.h>
-#include <internal/az_result_internal.h>
-#include <internal/az_span_internal.h>
+#include "az_http_internal.h"
+#include "az_precondition_internal.h"
+#include "az_result_internal.h"
+#include "az_span_internal.h"
 
 #include <assert.h>
 

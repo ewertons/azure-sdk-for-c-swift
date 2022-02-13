@@ -4,12 +4,12 @@
 #include "az_http_private.h"
 #include "az_config.h"
 #include "az_platform.h"
-#include <internal/az_config_internal.h>
-#include <internal/az_http_internal.h>
-#include <internal/az_log_internal.h>
-#include <internal/az_result_internal.h>
-#include <internal/az_retry_internal.h>
-#include <internal/az_span_internal.h>
+#include "az_config_internal.h"
+#include "az_http_internal.h"
+#include "az_log_internal.h"
+#include "az_result_internal.h"
+#include "az_retry_internal.h"
+#include "az_span_internal.h"
 
 #include <stdbool.h>
 #include <stddef.h>

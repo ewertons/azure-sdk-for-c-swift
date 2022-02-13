@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "az_context.h"
-#include <internal/az_precondition_internal.h>
+#include "az_precondition_internal.h"
 
 #include <stddef.h>
 

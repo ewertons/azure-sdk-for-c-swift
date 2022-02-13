@@ -4,8 +4,8 @@
 #include "az_http.h"
 #include "az_http_transport.h"
 #include "az_span.h"
-#include <internal/az_result_internal.h>
-#include <internal/az_span_internal.h>
+#include "az_result_internal.h"
+#include "az_span_internal.h"
 
 #include <stdlib.h>
 

@@ -5,14 +5,14 @@
 
 #include "az_result.h"
 #include "az_span.h"
-#include <internal/az_precondition_internal.h>
-#include <internal/az_result_internal.h>
-#include <internal/az_span_internal.h>
+#include "az_precondition_internal.h"
+#include "az_result_internal.h"
+#include "az_span_internal.h"
 #include "az_iot_common.h"
-#include <internal/az_iot_common_internal.h>
+#include "az_iot_common_internal.h"
 
-#include <internal/az_log_internal.h>
-#include <internal/az_retry_internal.h>
+#include "az_log_internal.h"
+#include "az_retry_internal.h"
 
 #include "_az_cfg.h"
 

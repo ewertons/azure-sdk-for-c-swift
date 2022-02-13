@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 
 #include "az_http.h"
-#include <internal/az_http_internal.h>
-#include <internal/az_precondition_internal.h>
+#include "az_http_internal.h"
+#include "az_precondition_internal.h"
 
 #include "_az_cfg.h"
 

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // SPDX-License-Identifier: MIT
 
-#include <internal/az_precondition_internal.h>
+#include "az_precondition_internal.h"
 #include <stdint.h>
 
 #include "_az_cfg.h"

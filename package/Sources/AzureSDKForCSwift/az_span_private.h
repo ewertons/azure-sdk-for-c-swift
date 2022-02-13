@@ -7,7 +7,7 @@
 #include "az_precondition.h"
 #include "az_result.h"
 #include "az_span.h"
-#include <internal/az_precondition_internal.h>
+#include "az_precondition_internal.h"
 
 #include <stdbool.h>
 
