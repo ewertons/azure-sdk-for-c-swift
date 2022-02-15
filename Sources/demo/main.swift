@@ -23,7 +23,7 @@ if CommandLine.arguments.count > 1 {
 let sem = DispatchSemaphore(value: 0)
 let queue = DispatchQueue(label: "a", qos: .background)
 
-class AzureIoTHubClientSwift: MQTTClientDelegate {
+class DemoClient: MQTTClientDelegate {
 
     private var iothub: String = ""
     private var deviceId: String = ""
@@ -48,10 +48,7 @@ class AzureIoTHubClientSwift: MQTTClientDelegate {
     var timerMsgRate: Timer!
     var timerDoWork: Timer!
     
-    private var newClient : AzureIoTClient! = nil
-
-    // IoT hub handle
-    private var azIoTHubClient: az_iot_hub_client! = nil
+    private var AzureIoTClientSwift : AzureIoTClient! = nil
 
     // MQTT Client
     private var mqttClient: MQTTClient! = nil
@@ -59,32 +56,13 @@ class AzureIoTHubClientSwift: MQTTClientDelegate {
     var delegateDispatchQueue: DispatchQueue {
         queue
     }
-    
-    func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
-        let count = str.utf8CString.count
-        let result: UnsafeMutableBufferPointer<Int8> = UnsafeMutableBufferPointer<Int8>.allocate(capacity: count)
-        _ = result.initialize(from: str.utf8CString)
-        return result.baseAddress!
-    }
 
     init(iothub: String, deviceId: String)
     {
         self.iothub = iothub
         self.deviceId = deviceId
-        azIoTHubClient = az_iot_hub_client()
-        newClient = AzureIoTClient(iothubUrl: iothub, deviceId: deviceId)
 
-        let iothubPointerString = makeCString(from: iothub)
-        let deviceIdString = makeCString(from: deviceId)
-
-        let iothubSpan: az_span = iothubPointerString.withMemoryRebound(to: UInt8.self, capacity: iothub.count) { hubPtr in
-            return az_span_create(hubPtr, Int32(deviceId.count))
-        }
-        let deviceIdSpan: az_span = deviceIdString.withMemoryRebound(to: UInt8.self, capacity: deviceId.count) { devPtr in
-            return az_span_create(devPtr, Int32(deviceId.count))
-        }
-
-        _ = az_iot_hub_client_init(&azIoTHubClient, iothubSpan, deviceIdSpan, nil)
+        AzureIoTClientSwift = AzureIoTClient(iothubUrl: iothub, deviceId: deviceId)
 
         let caCert = "\(base)/certs/baltimore.pem"
         let clientCert = "\(base)/certs/client.pem"
@@ -135,17 +113,11 @@ class AzureIoTHubClientSwift: MQTTClientDelegate {
 
     /// Sends a message to the IoT hub
     public func sendMessage() {
-
-        var topicCharArray = [CChar](repeating: 0, count: 50)
-        var topicLength : Int = 0
-        
-        let _ : az_result = az_iot_hub_client_telemetry_get_publish_topic(&azIoTHubClient, nil, &topicCharArray, 100, &topicLength )
-        
-        let swiftString = newClient.GetTelemetryPublishTopic()
+        let swiftString = AzureIoTClientSwift.GetTelemetryPublishTopic()
 
         let telem_payload = "Hello iOS"
         print("Sending a message: \(telem_payload)")
-        mqttClient.publish(topic: String(cString: topicCharArray), retain: false, qos: QOS.0, payload: telem_payload)
+
         mqttClient.publish(topic: swiftString, retain: false, qos: QOS.0, payload: telem_payload)
     }
     
@@ -189,9 +161,9 @@ class AzureIoTHubClientSwift: MQTTClientDelegate {
 private var myDeviceId: String = "ios"
 private var myHubURL: String = "dawalton-hub.azure-devices.net"
 
-var hubClient = AzureIoTHubClientSwift(iothub: myHubURL, deviceId: myDeviceId)
+var hubDemoClient = DemoClient(iothub: myHubURL, deviceId: myDeviceId)
 
-hubClient.connectToIoTHub()
+hubDemoClient.connectToIoTHub()
 
 while(!sendTelemetry)
 {
@@ -202,13 +174,13 @@ for x in 0...5
 {
     queue.asyncAfter(deadline: .now() + DispatchTimeInterval.seconds(x))
     {
-        hubClient.sendMessage()
+        hubDemoClient.sendMessage()
     }
 }
 
-queue.asyncAfter(deadline: .now() + 40) {
+queue.asyncAfter(deadline: .now() + 20) {
     print("Ending")
-    hubClient.disconnect()
+    hubDemoClient.disconnect()
 }
 
 sem.wait()
