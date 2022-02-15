@@ -1,9 +1,9 @@
 import AzureSDKForCSwift
 
-class AzureIoTClient {
+public class AzureIoTClient {
     private(set) var embeddedClient: az_iot_hub_client! = nil
 
-    init(iothubUrl: String, deviceId: String)
+    public init(iothubUrl: String, deviceId: String)
     {
         embeddedClient = az_iot_hub_client();
         
