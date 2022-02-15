@@ -20,37 +20,16 @@ if CommandLine.arguments.count > 1 {
     base = "."
 }
 
+/// Dispatch Queues to Send and Receive Messages
 let sem = DispatchSemaphore(value: 0)
 let queue = DispatchQueue(label: "a", qos: .background)
 
 class DemoClient: MQTTClientDelegate {
 
-    private var iothub: String = ""
-    private var deviceId: String = ""
-    private var sasKey: String = ""
-    
-    private var connectionString: String = ""
-    
-    private(set) var numReceivedMessages: Int = 0
-    
-    private(set) var numSentMessages: Int = 0
-    private(set) var numSentMessagesGood: Int = 0
-    private(set) var numSentMessagesBad: Int = 0
-    
-    private(set) var isConnected: Bool = false
-    private(set) var isSendingTelemetry: Bool = false
-    
-    private(set) var lastTempValue : String = ""
-    private(set) var lastHumidityValue : String = ""
-    private(set) var telemetryMessage : String = ""
-    
-    // Timers used to control message and polling rates
-    var timerMsgRate: Timer!
-    var timerDoWork: Timer!
-    
+    /// Azure IoT Client
     private var AzureIoTClientSwift : AzureIoTClient! = nil
 
-    // MQTT Client
+    /// MQTT Client
     private var mqttClient: MQTTClient! = nil
     
     var delegateDispatchQueue: DispatchQueue {
@@ -59,9 +38,6 @@ class DemoClient: MQTTClientDelegate {
 
     init(iothub: String, deviceId: String)
     {
-        self.iothub = iothub
-        self.deviceId = deviceId
-
         AzureIoTClientSwift = AzureIoTClient(iothubUrl: iothub, deviceId: deviceId)
 
         let caCert = "\(base)/certs/baltimore.pem"
@@ -74,9 +50,9 @@ class DemoClient: MQTTClientDelegate {
                                                                certificateChain: NIOSSLCertificate.fromPEMFile(clientCert).map { .certificate($0) },
                                                                privateKey: .privateKey(.init(file: keyCert, format: .pem)))
         mqttClient = MQTTClient(
-            host: "\(self.iothub)",
+            host: "\(iothub)",
             port: 8883,
-            clientID: "\(self.deviceId)",
+            clientID: "\(deviceId)",
             cleanSession: true,
             keepAlive: 30,
             username: "dawalton-hub.azure-devices.net/ios/?api-version=2018-06-30",
@@ -94,7 +70,7 @@ class DemoClient: MQTTClientDelegate {
         case let packet as ConnAckPacket:
             print("Connack \(packet)")
             sendTelemetry = true;
-            DispatchQueue.main.async { self.isConnected = true; }
+
         default:
             print(packet)
         }
@@ -111,7 +87,7 @@ class DemoClient: MQTTClientDelegate {
         print("Error: \(error)")
     }
 
-    /// Sends a message to the IoT hub
+/// Sends a message to the IoT hub
     public func sendMessage() {
         let swiftString = AzureIoTClientSwift.GetTelemetryPublishTopic()
 
@@ -120,41 +96,14 @@ class DemoClient: MQTTClientDelegate {
 
         mqttClient.publish(topic: swiftString, retain: false, qos: QOS.0, payload: telem_payload)
     }
-    
-    public func disconnect()
-    {
-        mqttClient.disconnect();
-    }
 
-    func connect() throws {
-        mqttClient.connect()
-    }
-    
     //Connect the device to iothub
     func connectToIoTHub() {
-        
-        do
-        {
-            try self.connect()
-        }
-        catch
-        {
-            print("Couldn't connect!")
-        }
-        
+        mqttClient.connect()
     }
-    
-    func disconectFromIoTHub() {
-        stopSendTelemetryMessages()
 
-        isConnected = false
-    }
-    
-    func stopSendTelemetryMessages() {
-        isSendingTelemetry = false
-        if(timerMsgRate.isValid) {
-            timerMsgRate.invalidate()
-        }
+    func disconnectFromIoTHub() {
+        mqttClient.disconnect();
     }
 }
 
@@ -180,7 +129,7 @@ for x in 0...5
 
 queue.asyncAfter(deadline: .now() + 20) {
     print("Ending")
-    hubDemoClient.disconnect()
+    hubDemoClient.disconnectFromIoTHub()
 }
 
 sem.wait()
