@@ -1,15 +1,8 @@
 import AzureSDKForCSwift
 
-public struct CAzureSDKForCSwift {
-    public private(set) var embeddedClient: az_iot_hub_client! = nil
+class AzureIoTClient {
+    private(set) var embeddedClient: az_iot_hub_client! = nil
 
-    func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
-            let count = str.utf8CString.count
-            let result: UnsafeMutableBufferPointer<Int8> = UnsafeMutableBufferPointer<Int8>.allocate(capacity: count)
-            _ = result.initialize(from: str.utf8CString)
-            return result.baseAddress!
-        }
-    
     init(iothubUrl: String, deviceId: String)
     {
         embeddedClient = az_iot_hub_client();
@@ -26,8 +19,15 @@ public struct CAzureSDKForCSwift {
 
         _ = az_iot_hub_client_init(&embeddedClient, iothubSpan, deviceIdSpan, nil)
     }
-    
-    public mutating func GetUserName() -> String
+
+    private func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
+        let count = str.utf8CString.count
+        let result: UnsafeMutableBufferPointer<Int8> = UnsafeMutableBufferPointer<Int8>.allocate(capacity: count)
+        _ = result.initialize(from: str.utf8CString)
+        return result.baseAddress!
+    }
+
+    public func GetUserName() -> String
     {
         var usernameCharArray = [CChar](repeating: 0, count: 50)
         var usernameLength : Int = 0
@@ -37,7 +37,7 @@ public struct CAzureSDKForCSwift {
         return String(cString: usernameCharArray)
     }
 
-    public mutating func GetClientID() -> String
+    public func GetClientID() -> String
     {
         var clientIDCharArray = [CChar](repeating: 0, count: 30)
         var clientIDLength : Int = 0
@@ -47,7 +47,7 @@ public struct CAzureSDKForCSwift {
         return String(cString: clientIDCharArray)
     }
 
-    public mutating func GetTelemetryPublishTopic() -> String
+    public func GetTelemetryPublishTopic() -> String
     {
         var topicCharArray = [CChar](repeating: 0, count: 50)
         var topicLength : Int = 0
@@ -67,7 +67,7 @@ public struct CAzureSDKForCSwift {
         return AZ_IOT_HUB_CLIENT_METHODS_SUBSCRIBE_TOPIC
     }
     
-    public mutating func GetMethodsResponseTopic(requestID: String, status: Int16) -> String
+    public func GetMethodsResponseTopic(requestID: String, status: Int16) -> String
     {
             var topicCharArray = [CChar](repeating: 0, count: 50)
             var topicLength : Int = 0
@@ -80,6 +80,6 @@ public struct CAzureSDKForCSwift {
             let _ : az_result = az_iot_hub_client_methods_response_get_publish_topic(&self.embeddedClient, requestIDSpan, UInt16(status), &topicCharArray, 50, &topicLength )
 
             return String(cString: topicCharArray)
-        }
+    }
 
 }
