@@ -10,6 +10,9 @@ let package = Package(
         .library(
             name: "AzureSDKForCSwift",
             targets: ["AzureSDKForCSwift"]),
+        .library(
+            name: "CAzureSDKForCSwift",
+            targets: ["CAzureSDKForCSwift"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -21,6 +24,9 @@ let package = Package(
         .target(
             name: "AzureSDKForCSwift",
             dependencies: []),
+        .target(
+            name: "CAzureSDKForCSwift",
+            dependencies: ["AzureSDKForCSwift"]),
         .testTarget(
             name: "AzureSDKForCSwiftTests",
             dependencies: ["AzureSDKForCSwift"]),

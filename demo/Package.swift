@@ -7,7 +7,8 @@ let package = Package(
     name: "demo",
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/danelikethedog/azure-sdk-for-c-swift", from: "1.0.0"),
+        // .package(url: "https://github.com/danelikethedog/azure-sdk-for-c-swift", from: "1.0.0"),
+        .package(path: "../"),
         .package(url: "https://github.com/matsune/swift-mqtt", from: "1.0.0")
     ],
     targets: [
