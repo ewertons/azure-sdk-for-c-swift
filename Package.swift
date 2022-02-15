@@ -10,17 +10,30 @@ let package = Package(
         .library(
             name: "AzureSDKForCSwift",
             targets: ["AzureSDKForCSwift"]),
+        .library(
+            name: "CAzureSDKForCSwift",
+            targets: ["CAzureSDKForCSwift"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
+        .package(url: "https://github.com/matsune/swift-mqtt", from: "1.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
+            name: "CAzureSDKForCSwift",
+            dependencies: ["AzureSDKForCSwift"]),
+        .target(
             name: "AzureSDKForCSwift",
             dependencies: []),
+        .executableTarget(
+                    name: "demo",
+                    dependencies: [
+                        "AzureSDKForCSwift",
+                        "CAzureSDKForCSwift",
+                        .product(name: "MQTT", package: "swift-mqtt")
+                        ]),
         .testTarget(
             name: "AzureSDKForCSwiftTests",
             dependencies: ["AzureSDKForCSwift"]),

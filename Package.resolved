@@ -2,15 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "AzureSDKForCSwift",
-        "repositoryURL": "https://github.com/danelikethedog/azure-sdk-for-c-swift",
-        "state": {
-          "branch": null,
-          "revision": "14363ea44de4b771bb44bc930a46a56a39cec5bc",
-          "version": "1.0.0"
-        }
-      },
-      {
         "package": "swift-mqtt",
         "repositoryURL": "https://github.com/matsune/swift-mqtt",
         "state": {

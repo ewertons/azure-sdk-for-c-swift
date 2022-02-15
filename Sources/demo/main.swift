@@ -1,9 +1,3 @@
-import AzureSDKForCSwift
-
-print("Hello, world!")
-
-let az_client: az_iot_hub_client;
-
 //
 //  AzureIoTSwiftViewController.swift
 //  AzureIoTSwiftSample
@@ -15,6 +9,7 @@ import Foundation
 import MQTT
 import NIOSSL
 import AzureSDKForCSwift
+import CAzureSDKForCSwift
 
 var sendTelemetry: Bool = false;
 
@@ -53,6 +48,8 @@ class AzureIoTHubClientSwift: MQTTClientDelegate {
     var timerMsgRate: Timer!
     var timerDoWork: Timer!
     
+    private var newClient : AzureIoTClient! = nil
+
     // IoT hub handle
     private var azIoTHubClient: az_iot_hub_client! = nil
 
@@ -74,8 +71,9 @@ class AzureIoTHubClientSwift: MQTTClientDelegate {
     {
         self.iothub = iothub
         self.deviceId = deviceId
-        azIoTHubClient = az_iot_hub_client();
-        
+        azIoTHubClient = az_iot_hub_client()
+        newClient = AzureIoTClient(iothubUrl: iothub, deviceId: deviceId)
+
         let iothubPointerString = makeCString(from: iothub)
         let deviceIdString = makeCString(from: deviceId)
 
@@ -143,9 +141,12 @@ class AzureIoTHubClientSwift: MQTTClientDelegate {
         
         let _ : az_result = az_iot_hub_client_telemetry_get_publish_topic(&azIoTHubClient, nil, &topicCharArray, 100, &topicLength )
         
+        let swiftString = newClient.GetTelemetryPublishTopic()
+
         let telem_payload = "Hello iOS"
         print("Sending a message: \(telem_payload)")
         mqttClient.publish(topic: String(cString: topicCharArray), retain: false, qos: QOS.0, payload: telem_payload)
+        mqttClient.publish(topic: swiftString, retain: false, qos: QOS.0, payload: telem_payload)
     }
     
     public func disconnect()
