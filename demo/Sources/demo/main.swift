@@ -16,6 +16,15 @@ import MQTT
 import NIOSSL
 import AzureSDKForCSwift
 
+var sendTelemetry: Bool = false;
+
+let base: String
+if CommandLine.arguments.count > 1 {
+    base = CommandLine.arguments[1]
+} else {
+    base = "."
+}
+
 let sem = DispatchSemaphore(value: 0)
 let queue = DispatchQueue(label: "a", qos: .background)
 
@@ -79,15 +88,9 @@ class AzureIoTHubClientSwift: MQTTClientDelegate {
 
         _ = az_iot_hub_client_init(&azIoTHubClient, iothubSpan, deviceIdSpan, nil)
 
-        let caCert = Bundle.main.path(forResource: "baltimore",
-                                      ofType: ".pem",
-                                      inDirectory: "certs/")!
-        let clientCert = Bundle.main.path(forResource: "client",
-                                          ofType: ".pem",
-                                          inDirectory: "certs/")!
-        let keyCert = Bundle.main.path(forResource: "client-key",
-                                       ofType: ".pem",
-                                       inDirectory: "certs/")!
+        let caCert = "\(base)/certs/baltimore.pem"
+        let clientCert = "\(base)/certs/client.pem"
+        let keyCert = "\(base)/certs/client-key.pem"
         let tlsConfiguration = try! TLSConfiguration.forClient(minimumTLSVersion: .tlsv11,
                                                                maximumTLSVersion: .tlsv12,
                                                                certificateVerification: .noHostnameVerification,
@@ -114,6 +117,7 @@ class AzureIoTHubClientSwift: MQTTClientDelegate {
         switch packet {
         case let packet as ConnAckPacket:
             print("Connack \(packet)")
+            sendTelemetry = true;
             DispatchQueue.main.async { self.isConnected = true; }
         default:
             print(packet)
@@ -130,36 +134,9 @@ class AzureIoTHubClientSwift: MQTTClientDelegate {
     func mqttClient(_: MQTTClient, didCatchError error: Error) {
         print("Error: \(error)")
     }
-    
-    private func connectionStringCreateFromSAS() -> String {
-        return "HostName=\(iothub);DeviceId=\(deviceId);SharedAccessKey=\(sasKey)"
-    }
-    
-    private func incReceivedMessage() {
-        numReceivedMessages += 1
-    }
-    
-    private func incSentMessagesGood() {
-        numSentMessagesGood += 1
-    }
-    
-    private func incSentMessagesBad() {
-        numSentMessagesBad += 1
-    }
-    
-    private func createTelemetryMessage() -> String {
-        let temperature = String(format: "%.2f",drand48() * 15 + 20)
-        let humidity = String(format: "%.2f", drand48() * 20 + 60)
-        let data : [String : String] = ["temperature":temperature,
-                                    "humidity": humidity]
-        lastTempValue = data["temperature"]!
-        lastHumidityValue = data["humidity"]!
-        
-        return data.description
-    }
-    
+
     /// Sends a message to the IoT hub
-    @objc private func sendMessage() {
+    public func sendMessage() {
 
         var topicCharArray = [CChar](repeating: 0, count: 50)
         var topicLength : Int = 0
@@ -171,9 +148,9 @@ class AzureIoTHubClientSwift: MQTTClientDelegate {
         mqttClient.publish(topic: String(cString: topicCharArray), retain: false, qos: QOS.0, payload: telem_payload)
     }
     
-    @objc private func doWork() {
-        print("Doing work")
-        
+    public func disconnect()
+    {
+        mqttClient.disconnect();
     }
 
     func connect() throws {
@@ -200,15 +177,6 @@ class AzureIoTHubClientSwift: MQTTClientDelegate {
         isConnected = false
     }
     
-    func startSendTelemetryMessages() {
-        // Timer for message sends and timer for message polls
-        if(isConnected)
-        {
-            isSendingTelemetry = true
-            timerMsgRate = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(sendMessage), userInfo: nil, repeats: true)
-        }
-    }
-    
     func stopSendTelemetryMessages() {
         isSendingTelemetry = false
         if(timerMsgRate.isValid) {
@@ -217,4 +185,29 @@ class AzureIoTHubClientSwift: MQTTClientDelegate {
     }
 }
 
+private var myDeviceId: String = "ios"
+private var myHubURL: String = "dawalton-hub.azure-devices.net"
 
+var hubClient = AzureIoTHubClientSwift(iothub: myHubURL, deviceId: myDeviceId)
+
+hubClient.connectToIoTHub()
+
+while(!sendTelemetry)
+{
+    //Waiting
+}
+
+for x in 0...5
+{
+    queue.asyncAfter(deadline: .now() + DispatchTimeInterval.seconds(x))
+    {
+        hubClient.sendMessage()
+    }
+}
+
+queue.asyncAfter(deadline: .now() + 40) {
+    print("Ending")
+    hubClient.disconnect()
+}
+
+sem.wait()
